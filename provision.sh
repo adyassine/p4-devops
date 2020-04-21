@@ -17,7 +17,7 @@ echo -e "\e[34m\e[1m=== Ansible ($ansible_version) installation ==="
 apt-get install -y ansible
 
 echo -e "\e[34m\e[1m=== Docker CE ($dockerce_version) installation ==="
-apt-get install -y apt-get-transport-https ca-certificates curl gnupg2 software-properties-common
+apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
 curl -fsSL https://download.docker.com/linux/debian/gpg --output docker_gpg
 apt-get-key add docker_gpg && rm -f docker_gpg
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
