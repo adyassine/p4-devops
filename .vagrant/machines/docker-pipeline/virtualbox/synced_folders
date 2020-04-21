@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/Users/adyassine/Projects/p4-devops","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
