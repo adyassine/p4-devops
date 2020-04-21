@@ -2,6 +2,7 @@
 
 set -e # exit script immediately on first error
 export DEBIAN_FRONTEND=noninteractive
+DOCKER_VERSION="18.03.1~ce-0~debian"
 
 apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
