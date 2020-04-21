@@ -1,33 +1,34 @@
 #!/usr/bin/env bash
 
 set -e # exit script immediately on first error
+export DEBIAN_FRONTEND=noninteractive
 
-# package version variables
-dockerce_version="18.03.1~ce-0~debian"
-dockercompose_version="1.25.5"
+apt-get update && apt-get install -y --no-install-recommends \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg2 \
+    software-properties-common \
+    vim \
+    ansible \
+    git
 
-# script
-echo -e "\e[34m\e[1m=== Update current packages ==="
-apt-get update
+echo "Installing docker via apt repo..."
+curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
+apt-key fingerprint 0EBFCD88
 
-echo -e "\e[34m\e[1m=== Neovim ($neovim_version) installation ==="
-apt-get install -y neovim
+add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")  $(lsb_release -cs) stable"
 
-echo -e "\e[34m\e[1m=== Ansible ($ansible_version) installation ==="
-apt-get install -y ansible
+apt-get update && apt install -y --no-install-recommends \
+    docker-ce=#{DOCKER_VERSION}
 
-echo -e "\e[34m\e[1m=== Docker CE ($dockerce_version) installation ==="
-apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
-curl -fsSL https://download.docker.com/linux/debian/gpg --output docker_gpg
-apt-get-key add docker_gpg && rm -f docker_gpg
-add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
-apt-get update
-apt-get install -y docker-ce=$dockerce_version
+echo "Adding vagrant user to docker and adm groups..."
+groupadd docker &> /dev/null
+usermod -aG docker vagrant
+usermod -aG adm vagrant
 
-echo -e "\e[34m\e[1m=== Docker-compose ($dockercompose_version) installation ==="
-curl -L "https://github.com/docker/compose/releases/download/$dockercompose_version/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-
-echo -e "\e[34m\e[1m=== Check if Neovim, Ansible, Docker CE and Docker-compose are present ==="
-dpkg-query -l neovim ansible docker-ce
-docker-compose --version
+echo "Writing docker aliases..."
+cat > /etc/profile.d/00-aliases.sh <<EOF
+alias d="docker"
+EOF
+echo "Enojy! :)"
