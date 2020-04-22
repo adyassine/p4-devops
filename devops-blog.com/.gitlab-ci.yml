@@ -1,9 +1,15 @@
-image: python:3.6-alpine
-
-pages:
+deploy:
+  stage: build
   script:
-    - pip install -r requirements.txt
-    - pelican -s publishconf.py
-  artifacts:
-    paths:
-      - public/
+    - git clone --depth 1 https://${GITHUB_USER_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/${GITHUB_USER_NAME}/${GITHUB_USER_NAME}.github.io.git
+    - mkdir ${GITHUB_USER_NAME}.github.io.tmp
+    - cp -a ${GITHUB_USER_NAME}.github.io/.git ${GITHUB_USER_NAME}.github.io.tmp/.git
+    - cp -a public/* ${GITHUB_USER_NAME}.github.io.tmp
+    - cd ${GITHUB_USER_NAME}.github.io.tmp
+    - git config user.email "${GITHUB_USER_EMAIL}"
+    - git config --global user.name "${GITHUB_USER_NAME}"
+    - git add -A
+    - git diff-index --quiet HEAD || git commit -m "$CI_SERVER_NAME $CI_PIPELINE_ID"
+    - git push
+  only:
+    - master

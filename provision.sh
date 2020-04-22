@@ -21,7 +21,7 @@ apt-key fingerprint 0EBFCD88
 add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")  $(lsb_release -cs) stable"
 
 apt-get update && apt install -y --no-install-recommends \
-    docker-ce=#{DOCKER_VERSION}
+    docker-ce=$DOCKER_VERSION
 
 echo "Adding vagrant user to docker and adm groups..."
 groupadd docker &> /dev/null

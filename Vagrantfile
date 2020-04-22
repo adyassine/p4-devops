@@ -9,11 +9,6 @@ Vagrant.configure("2") do |config|
         config.vm.network "private_network", ip: "192.168.33.10"
         config.vm.hostname = "devops-app"
         config.vm.provision :shell, :path => "provision.sh"
-        # Build docker image
-        config.vm.provision :docker do |docker|
-            docker.build_image './devops-blog.com/', args: '-t web'
-            docker.run 'web', args: '-it'
-        end
         config.vm.post_up_message = \
             "The private network IP address is: 192.168.33.10\n\n" \
             "To customize, set the host called '#{config.vm.hostname}'\n" \
