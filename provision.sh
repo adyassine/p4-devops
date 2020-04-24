@@ -11,10 +11,8 @@ apt-get update && apt-get install -y --no-install-recommends \
 
 echo "Installing gitlab"
 curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
-LC_ALL="en_US.UTF-8"
-LC_CTYPE="en_US.UTF-8"
-EXTERNAL_URL="http://192.168.33.20"
-apt-get install -y gitlab-ce
+LC_ALL="en_US.UTF-8" LC_CTYPE="en_US.UTF-8" EXTERNAL_URL="http://192.168.33.20" apt-get install -y gitlab-ce
+LC_ALL="en_US.UTF-8" LC_CTYPE="en_US.UTF-8" EXTERNAL_URL="http://192.168.33.20" gitlab-ctl reconfigure
 
 echo "Installing docker dependencies"
 apt-get update && apt-get install -y --no-install-recommends \
@@ -29,6 +27,7 @@ docker run -d --name gitlab-runner --restart always \
  gitlab/gitlab-runner:latest
 
 # manual config
+#vagrant ssh
 #sudo docker exec -it gitlab-runner gitlab-runner register
 # URL : http://192.168.33.20
 # Token :
@@ -37,8 +36,10 @@ docker run -d --name gitlab-runner --restart always \
 # Executor : docker
 # Image : alpine:latest
 
-#echo "Installing pelican"
-#pip install pelican[Markdown]
+echo "Installing pelican"
+apt-get update && apt-get install -y --no-install-recommends python-pip python-setuptools
+
+pip install pelican[Markdown]
 
 echo "Writing aliases"
 cat > /etc/profile.d/00-aliases.sh <<EOF
