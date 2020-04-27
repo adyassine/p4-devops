@@ -4,6 +4,7 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "debian/buster64"
     config.vm.network "private_network", ip: "192.168.33.20"
+    config.vm.synced_folder ".", "/vagrant"
     config.vm.hostname = "gitlab"
     config.vm.provider :virtualbox do |v|
         v.memory = 2048

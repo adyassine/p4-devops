@@ -1,13 +1,7 @@
-image: alpine:latest
+image: apihackers/pelican:latest
 
 before_script:
-  - echo "Before script section"
-  - echo "For example you might run an update here or install a build dependency"
-  - echo "Or perhaps you might print out some debugging details"
-
-after_script:
-  - echo "After script section"
-  - echo "For example you might do some cleanup here"
+  - pelican --version
 
 build:
   tags:
@@ -15,11 +9,28 @@ build:
   stage: build
 
   script:
-    - echo "Do your build here"
+    - rm -fr outputs/*
+    - pelican content -o outputs
+  artifacts:
+    paths:
+      - outputs
 
 publish:
   tags:
     - docker
   stage: deploy
   script:
-    - echo "Do your deploy here"
+    - apk update && apk upgrade
+    - apk add --no-cache git=2.22.4-r0
+    - ls -al outputs
+    - git clone --depth 1 https://$GITHUB_USERNAME:$GITHUB_ACCESS_TOKEN@github.com/$GITHUB_USERNAME/$GITHUB_USERNAME.github.io.git github_pages
+    - cp -rv outputs/* github_pages/
+    - cd github_pages
+    - git config user.email "${GITHUB_USER_EMAIL}"
+    - git config --global user.name "${GITHUB_USER_FULLNAME}"
+    - git add -A
+    - git commit -m "Build from $CI_PIPELINE_ID pipeline"
+    - git push
+  artifacts:
+    paths:
+      - github_pages
